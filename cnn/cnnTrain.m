@@ -13,7 +13,7 @@
 %  Here we initialize some parameters used for the exercise.
 
 % Configuration
-imageDim = 28;
+imageDim = 32;
 numClasses = 10;  % Number of classes (MNIST images fall into 10 classes)
 filterDim = 9;    % Filter size for conv layer
 numFilters = 20;   % Number of filters for conv layer
@@ -21,9 +21,8 @@ poolDim = 2;      % Pooling dimension, (should divide imageDim-filterDim+1)
 
 % Load MNIST Train
 addpath ../common/;
-images = loadMNISTImages('../common/train-images-idx3-ubyte');
-images = reshape(images,imageDim,imageDim,[]);
-labels = loadMNISTLabels('../common/train-labels-idx1-ubyte');
+load('../common/small_data_batch_1.mat');
+images = reshape(data,imageDim,imageDim,[]);
 labels(labels==0) = 10; % Remap 0 to 10
 
 % Initialize Parameters
@@ -73,6 +72,7 @@ if DEBUG
     
 end;
 
+cnnCost(theta, images, labels, numClasses, filterDim, numFilters, poolDim);
 %%======================================================================
 %% STEP 3: Learn Parameters
 %  Implement minFuncSGD.m, then train the model.

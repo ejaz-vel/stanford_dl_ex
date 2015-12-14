@@ -14,10 +14,8 @@ function pooledFeatures = cnnPool(poolDim, convolvedFeatures)
 numImages = size(convolvedFeatures, 4);
 numFilters = size(convolvedFeatures, 3);
 convolvedDim = size(convolvedFeatures, 1);
-
-pooledFeatures = zeros(convolvedDim / poolDim, ...
-        convolvedDim / poolDim, numFilters, numImages);
-
+poolSize = convolvedDim / poolDim;
+pooledFeatures = zeros(poolSize, poolSize, numFilters, numImages);
 % Instructions:
 %   Now pool the convolved features in regions of poolDim x poolDim,
 %   to obtain the 
@@ -30,6 +28,18 @@ pooledFeatures = zeros(convolvedDim / poolDim, ...
 %   Use mean pooling here.
 
 %%% YOUR CODE HERE %%%
-
+for imageNum = 1:numImages
+	for filterNum = 1:numFilters
+    		pooledImage = zeros(poolSize, poolSize);
+		for i = 1 : poolSize
+			for j = 1 : poolSize
+				x = ((i-1) * poolSize) + 1;
+				y = ((j-1) * poolSize) + 1;
+				pooledImage(i,j) = max(convolvedFeatures(x:x+poolSize-1, y:y+poolSize-1, filterNum, imageNum)(:));
+			end
+		end
+		pooledFeatures(:, :, filterNum, imageNum) = pooledImage;
+	end
+end
 end
 

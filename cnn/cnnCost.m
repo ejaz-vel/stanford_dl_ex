@@ -73,10 +73,49 @@ activationsPooled = zeros(outputDim,outputDim,numFilters,numImages);
 
 %%% YOUR CODE HERE %%%
 
+for imageNum = 1:numImages
+  for filterNum = 1:numFilters
+    % convolution of image with feature matrix
+    convolvedImage = zeros(convDim, convDim);
+
+    % Obtain the feature (filterDim x filterDim) needed during the convolution
+    %%% YOUR CODE HERE %%%
+    filter = Wc(:,:,filterNum);
+
+    % Flip the feature matrix because of the definition of convolution, as explained later
+    filter = rot90(squeeze(filter),2);
+
+    % Obtain the image
+    im = squeeze(images(:, :, imageNum));
+
+    % Convolve "filter" with "im", adding the result to convolvedImage
+    % be sure to do a 'valid' convolution
+    for i = 1 : convDim
+	    for j = 1 : convDim
+		    convolvedImage(i,j) = sum((images(i:i+filterDim-1,j:j+filterDim-1,imageNum) .* filter)(:)); 
+		    bias = bc(filterNum); 
+		    convolvedImage(i,j) = sigmoid(convolvedImage(i,j) + bias);
+	    end
+    end
+    activations(:, :, filterNum, imageNum) = convolvedImage;
+
+    % Pooling Layer
+    pooledImage = zeros(outputDim, outputDim);
+    for i = 1 : outputDim-1
+	    for j = 1 : outputDim-1
+		    x = ((i-1) * poolDim) + 1;
+		    y = ((j-1) * poolDim) + 1;
+		    pooledImage(i,j) = max(activations(x:x+poolDim-1, y:y+poolDim-1, filterNum, imageNum)(:));
+	    end
+     end
+     activationsPooled(:, :, filterNum, imageNum) = pooledImage;
+  end
+end
+
 % Reshape activations into 2-d matrix, hiddenSize x numImages,
 % for Softmax layer
 activationsPooled = reshape(activationsPooled,[],numImages);
-
+size(activationsPooled)
 %% Softmax Layer
 %  Forward propagate the pooled activations calculated above into a
 %  standard softmax layer. For your convenience we have reshaped

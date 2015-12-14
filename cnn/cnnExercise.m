@@ -12,19 +12,16 @@
 %% STEP 0: Initialization and Load Data
 %  Here we initialize some parameters used for the exercise.
 
-imageDim = 28;         % image dimension
-
+imageDim = 32;         % image dimension
 filterDim = 8;          % filter dimension
 numFilters = 100;         % number of feature maps
-
-numImages = 60000;    % number of images
-
-poolDim = 3;          % dimension of pooling region
+numImages = 500;    % number of images
+poolDim = 5;          % dimension of pooling region
 
 % Here we load MNIST training images
 addpath ../common/;
-images = loadMNISTImages('../common/train-images-idx3-ubyte');
-images = reshape(images,imageDim,imageDim,numImages);
+load('../common/data_batch_1.mat');
+images = reshape(data'(1:1024,1:500),imageDim,imageDim,numImages);
 
 W = randn(filterDim,filterDim,numFilters);
 b = rand(numFilters);
@@ -49,8 +46,8 @@ convolvedFeatures = cnnConvolve(filterDim, numFilters, convImages, W, b);
 %  provided some code to compare the results of your convolution with
 %  activations from the sparse autoencoder
 
-% For 1000 random points
-for i = 1:1000   
+% For 10000 random points
+for i = 1:500   
     filterNum = randi([1, numFilters]);
     imageNum = randi([1, 8]);
     imageRow = randi([1, imageDim - filterDim + 1]);
